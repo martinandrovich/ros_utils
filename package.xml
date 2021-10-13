@@ -16,5 +16,6 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	<depend>roscpp</depend>
 	<depend>roslib</depend>
+	<depend>gazebo_msgs</depend>
 
 </package>
