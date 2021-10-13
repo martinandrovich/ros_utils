@@ -29,3 +29,17 @@ namespace ros::param
 	};
 	
 }
+
+namespace ros::topic
+{
+	void
+	read();
+	// {
+		// lookup in map if topic exists, return mutexed value
+		// map string : { mutex, thread }
+		
+		// create async listener
+	
+	// };
+
+}
