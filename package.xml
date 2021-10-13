@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+
+	<name>ros_utils</name>
+	<version>1.0.0</version>
+	<description>Collection of modern utilities for the ROS/Gazebo workflow</description>
+
+	<author email="martinandrovich@gmail.com">Martin Androvich</author>
+	<author email="dscho15@student.sdu.dk">Daniel Tofte Schøn</author>
+	<maintainer email="martinandrovich@gmail.com">Martin Androvich</maintainer>
+
+	<license>BSD</license>
+
+	<url type="repository">https://github.com/martinandrovich/ros_utils</url>
+
+	<buildtool_depend>catkin</buildtool_depend>
+	<depend>roscpp</depend>
+	<depend>roslib</depend>
+
+</package>
