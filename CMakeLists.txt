@@ -11,6 +11,7 @@ find_package(
 	COMPONENTS
 		roscpp
 		roslib
+		eigen_conversions
 		gazebo_msgs
 )
 
@@ -41,6 +42,7 @@ catkin_package(
 	CATKIN_DEPENDS
 		roscpp
 		roslib
+		eigen_conversions
 		gazebo_msgs
 	DEPENDS
 		EIGEN3

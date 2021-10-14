@@ -1,8 +1,13 @@
 #pragma once
 
-#include <sensor_msgs/JointState.h>
-#include <gazebo_msgs/LinkStates.h>
+#include <Eigen/Eigen>
+
 #include <gazebo_msgs/ModelStates.h>
+#include <gazebo_msgs/LinkStates.h>
+#include <sensor_msgs/JointState.h>
+#include <geometry_msgs/Pose.h>
+#include <gazebo_msgs/ModelState.h>
+#include <gazebo_msgs/LinkState.h>
 
 namespace gazebo
 {
@@ -15,12 +20,17 @@ namespace gazebo
 	sensor_msgs::JointState
 	get_joint_states();
 	
-	geometry_msgs::Pose
-	// geometry_msgs::PoseTwist
-	get_model_state(const std::string& name, const std::string& relative_to = "");
+	gazebo_msgs::ModelState
+	get_model_state(const std::string& name, const std::string& ref = "world");
 	
-	auto
-	get_state(const std::string& name);
+	gazebo_msgs::LinkState
+	get_link_state(const std::string& name, const std::string& ref = "world");
+	
+	geometry_msgs::Pose
+	get_pose(const std::string& name /* model or link */, const std::string& ref = "world");
+	
+	Eigen::Isometry3d
+	get_tf(const std::string& from, const std::string& to);
 	
 	void
 	spawn_model(const std::string& model, const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy = { 0, 0, 0 });
