@@ -77,6 +77,9 @@ target_link_libraries(demo_ros_param ${catkin_LIBRARIES} ros_utils)
 add_executable(demo_gazebo examples/demo_gazebo)
 target_link_libraries(demo_gazebo ${catkin_LIBRARIES} ros_utils)
 
+add_executable(demo_std examples/demo_std)
+target_link_libraries(demo_std ${catkin_LIBRARIES} ros_utils)
+
 ################################################################################################
 
 # install targets
