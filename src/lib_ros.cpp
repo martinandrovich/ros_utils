@@ -18,6 +18,6 @@ ros::NodeHandle*
 ros::make_node(const std::string& name)
 {
 	// init ros with empty argc and argv and make a new node
-	ros::init(name);
+	static auto init = ros::init(name);
 	return new ros::NodeHandle(name);
 }

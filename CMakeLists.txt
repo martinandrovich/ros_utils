@@ -74,6 +74,9 @@ target_link_libraries(ros_utils ${catkin_LIBRARIES})
 add_executable(demo_ros_param examples/demo_ros_param)
 target_link_libraries(demo_ros_param ${catkin_LIBRARIES} ros_utils)
 
+add_executable(demo_ros_topic examples/demo_ros_topic)
+target_link_libraries(demo_ros_topic ${catkin_LIBRARIES} ros_utils)
+
 add_executable(demo_gazebo examples/demo_gazebo)
 target_link_libraries(demo_gazebo ${catkin_LIBRARIES} ros_utils)
 
