@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ros/ros.h>
 
+#include <std_msgs/Float64.h>
+
 namespace ros
 {
 	
@@ -18,7 +20,8 @@ namespace ros::param
 {
 	
 	template <typename T>
-	auto read = [](const std::string& name, T fallback)
+	inline auto
+	read = [](const std::string& name, T fallback)
 	{	
 		static auto init = ros::init("ros_utils_read");
 		
@@ -41,5 +44,14 @@ namespace ros::topic
 		// create async listener
 	
 	// };
+	
+	template <typename T>
+	inline void
+	publish(const std::string& topic, const T& msg, bool latch = false, const std::string& node_name = "~")
+	{
+		static auto nh = ros::make_node(node_name);
+		static auto pub = nh->advertise<T>(topic, 1, latch);
+		pub.publish(msg);
+	};
 
 }
