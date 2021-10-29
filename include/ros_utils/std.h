@@ -1,5 +1,13 @@
+#pragma once
+
+#include <string>
 #include <initializer_list>
 #include <algorithm>
+
+std::string // todo
+get_timestamp(const std::string& format = "%Y%m%d_%H%M%S");
+
+// -- is_in() -----------------------------------------------------------------
 
 template<class T>
 struct type_identity { using type = T; };
