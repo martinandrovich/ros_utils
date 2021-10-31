@@ -64,6 +64,7 @@ include_directories(
 add_library(ros_utils
 	src/lib_ros.cpp
 	src/lib_gazebo.cpp
+	src/lib_geometry_msgs.cpp
 )
 target_link_libraries(ros_utils ${catkin_LIBRARIES})
 
@@ -82,6 +83,9 @@ target_link_libraries(demo_gazebo ${catkin_LIBRARIES} ros_utils)
 
 add_executable(demo_std examples/demo_std)
 target_link_libraries(demo_std ${catkin_LIBRARIES} ros_utils)
+
+add_executable(demo_geometry_msgs examples/demo_geometry_msgs)
+target_link_libraries(demo_geometry_msgs ${catkin_LIBRARIES} ros_utils)
 
 ################################################################################################
 
