@@ -31,7 +31,7 @@ namespace moveit
 	);
 
 	void
-	set_virtual_jnt_pose(
+	set_floating_jnt_pose(
 		moveit::core::RobotState& state,
 		const std::string& joint,
 		const geometry_msgs::Pose& pose

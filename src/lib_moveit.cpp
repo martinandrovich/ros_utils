@@ -88,17 +88,28 @@ moveit::add_cobjs(planning_scene::PlanningScenePtr& planning_scene, const std::v
 }
 
 void
-moveit::set_virtual_jnt_pose(moveit::core::RobotState& state, const std::string& joint, const geometry_msgs::Pose& pose)
+moveit::set_floating_jnt_pose(moveit::core::RobotState& state, const std::string& joint, const geometry_msgs::Pose& pose)
 {
-	// RobotState has a floating virtual joint, which can be set.
+	// RobotState has a floating virtual joint, which can be set
 	// http://docs.ros.org/en/melodic/api/moveit_core/html/classmoveit_1_1core_1_1RobotState.html#ad08c92a61d43013714ec3894cd67a297
-	
+
 	// ROS_INFO_STREAM(state.getRobotModel()->getRootJointName());
-	// ROS_INFO_STREAM(state.getRobotModel()->getRootJoint()->getTypeName());
-	
+	// ROS_INFO_STREAM(state.getRobotModel()->getRootJoint()->getTypeName()); // Must be 'Floating'
+
+	const auto jnt_type = state.getRobotModel()->getRootJoint()->getTypeName();
+	if (jnt_type != "Floating")
+		throw std::runtime_error("Joint type of '" + joint + "' must be 'Floating'.");
+
+	// how to know where "/trans_x" comes from
+	// std::cout << state.getStateTreeString() << std::endl;
+
 	state.setVariablePositions({
 		{ joint + "/trans_x", pose.position.x },
 		{ joint + "/trans_y", pose.position.y },
-		{ joint + "/trans_z", pose.position.z } 
+		{ joint + "/trans_z", pose.position.z },
+		{ joint + "/rot_x", pose.orientation.x },
+		{ joint + "/rot_y", pose.orientation.y },
+		{ joint + "/rot_z", pose.orientation.z },
+		{ joint + "/rot_w", pose.orientation.w }
 	});
 }
