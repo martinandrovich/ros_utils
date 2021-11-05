@@ -10,16 +10,16 @@ namespace geometry_msgs
 
 	// -- geometry_msgs::Pose------------------------------------------------------
 
-	geometry_msgs::Pose // todo
+	geometry_msgs::Pose
 	make_pose(const std::array<double, 3>& pos, const std::array<double, 3>& rpy);
 
-	geometry_msgs::Pose // todo
+	geometry_msgs::Pose
 	make_pose(const std::array<double, 6>& pose);
 
-	geometry_msgs::Pose // todo
+	geometry_msgs::Pose
 	make_pose(const std::array<double, 3>& pos, const Eigen::Quaternion<double>& ori);
 
-	auto
+	inline auto
 	read_pose(const geometry_msgs::Pose& pose)
 	{
 		struct
