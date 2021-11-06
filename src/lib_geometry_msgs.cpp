@@ -1,4 +1,5 @@
 #include <ros_utils/geometry_msgs.h>
+#include <eigen_conversions/eigen_msg.h>
 
 geometry_msgs::Pose
 geometry_msgs::make_pose(const std::array<double, 3>& pos, const std::array<double, 3>& rpy)
@@ -46,6 +47,15 @@ geometry_msgs::make_pose(const std::array<double, 3>& pos, const Eigen::Quaterni
 	pose.orientation.x = ori.x();
 	pose.orientation.y = ori.y();
 	pose.orientation.z = ori.z();
+
+	return pose;
+}
+
+geometry_msgs::Pose
+geometry_msgs::make_pose(const Eigen::Isometry3d& T)
+{
+	static geometry_msgs::Pose pose;
+	tf::poseEigenToMsg(T, pose);
 
 	return pose;
 }

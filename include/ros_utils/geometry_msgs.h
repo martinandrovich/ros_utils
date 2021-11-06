@@ -18,6 +18,9 @@ namespace geometry_msgs
 
 	geometry_msgs::Pose
 	make_pose(const std::array<double, 3>& pos, const Eigen::Quaternion<double>& ori);
+	
+	geometry_msgs::Pose
+	make_pose(const Eigen::Isometry3d& T);
 
 	inline auto
 	read_pose(const geometry_msgs::Pose& pose)
