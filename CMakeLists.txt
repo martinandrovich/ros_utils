@@ -74,6 +74,7 @@ add_library(ros_utils
 	src/lib_gazebo.cpp
 	src/lib_geometry_msgs.cpp
 	src/lib_moveit.cpp
+	src/lib_eigen.cpp
 )
 target_link_libraries(ros_utils ${catkin_LIBRARIES})
 
