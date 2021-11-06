@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <array>
 #include <regex>
 #include <unordered_map>
 #include <Eigen/Eigen>
@@ -52,8 +53,8 @@ namespace gazebo
 	void
 	spawn_model(const std::string& model, const std::string& name, const geometry_msgs::Pose& pose);
 
-	void // todo
-	remove_model(const std::string& name);
+	void
+	delete_model(const std::string& name);
 
 	void // todo
 	move_model(const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy = { INFINITY, INFINITY, INFINITY});

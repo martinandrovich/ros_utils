@@ -9,6 +9,7 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/GetLinkState.h>
+#include <gazebo_msgs/DeleteModel.h>
 
 // -- simulation --------------------------------------------------------------
 
@@ -111,4 +112,16 @@ void
 gazebo::spawn_model(const std::string& model, const std::string& name, const geometry_msgs::Pose& pose)
 {	
 	spawn_model(model, name, geometry_msgs::read_pose(pose).pos, geometry_msgs::read_pose(pose).rpy);
+}
+
+void
+gazebo::delete_model(const std::string& name)
+{
+	static auto init = ros::init("delete_model");
+
+	gazebo_msgs::DeleteModel srv;
+	srv.request.model_name = name;
+	
+	if (not ros::service::call("/gazebo/delete_model", srv) or not srv.response.success)
+		ROS_ERROR_STREAM("Service call failed in gazebo::delete_model(\"" << name << "\").");
 }
