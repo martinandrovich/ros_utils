@@ -77,10 +77,28 @@ moveit::add_cobjs(planning_scene::PlanningScenePtr& planning_scene, const std::v
 {
 	static moveit_msgs::PlanningScene planning_scene_msg;
 	planning_scene->getPlanningSceneMsg(planning_scene_msg);
+
 	planning_scene_msg.world.collision_objects = cobjs;
 
+	planning_scene_msg.world.collision_objects[0].id;
+	planning_scene_msg.robot_state.attached_collision_objects[0].object.id;
+
 	if (remove_attached_cobjs)
+	{
 		planning_scene_msg.robot_state.attached_collision_objects = {};
+	}
+	else
+	{
+		// keep attached objects
+		auto& a = planning_scene_msg.world.collision_objects;
+		auto& b = planning_scene_msg.robot_state.attached_collision_objects;
+		
+		// remove any elements from a that are also in b
+		// matching by their id
+		a.erase(std::remove_if(a.begin(), a.end(),
+			[&](auto& elem_a){ return std::find_if(b.begin(), b.end(), [&](auto& elem_b){ return elem_a.id == elem_b.object.id; }) != b.end(); }
+		), end(a));
+	}
 
 	planning_scene->setPlanningSceneMsg(planning_scene_msg);
 
