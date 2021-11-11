@@ -1,11 +1,45 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <initializer_list>
 #include <algorithm>
+#include <memory>
 
 std::string // todo
 get_timestamp(const std::string& format = "%Y%m%d_%H%M%S");
+
+inline void
+ENTER_TO_CONTINUE(const std::string& msg = "continue")
+{
+	std::cout << "\nPress [ENTER] to " << msg << "..."; std::cin.ignore();
+}
+
+// -- cout overloads for container (array, vector) ----------------------------
+// currently only implemented for vector; can be made better with C++20 concepts
+
+template<typename T>
+std::ostream&
+operator << (std::ostream& os, const std::vector<T>& vec)
+{
+	os << "[";
+	for (auto i = 0; i < vec.size(); i++)
+		os << vec[i] << (i < (vec.size() - 1) ? ", " : "");
+	os << "]";
+	return os;
+}
+
+// https://stackoverflow.com/a/51532253/1658105
+// template<typename T, template<typename, typename> class Container>
+// std::ostream&
+// operator << (std::ostream& os, const Container<T, std::allocator<T>>& c)
+// {
+// 	os << "[";
+// 	for (auto i = 0; i < c.size(); i++)
+// 		os << c[i] << (i < (c.size() - 1) ? ", " : "");
+// 	os << "]";
+// 	return os;
+// }
 
 // -- is_in() -----------------------------------------------------------------
 
