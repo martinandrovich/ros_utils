@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <memory>
 
-std::string // todo
+std::string
 get_timestamp(const std::string& format = "%Y%m%d_%H%M%S");
 
 inline void
