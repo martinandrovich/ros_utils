@@ -39,7 +39,7 @@ gazebo::get_model_state(const std::string& name, const std::string& ref)
 	srv.request.relative_entity_name = ref;
 	
 	if (not ros::service::call("/gazebo/get_model_state", srv) or not srv.response.success)
-		{ ROS_ERROR_STREAM("Service call failed in gazebo::get_model_state(\"" << name << "\")."); throw; }
+		throw std::runtime_error("Failed service call with for model '" + name + "' in get_model_state().");
 	
 	gazebo_msgs::ModelState model_state;
 	model_state.model_name = name;
@@ -60,7 +60,7 @@ gazebo::get_link_state(const std::string& name, const std::string& ref)
 	srv.request.reference_frame = ref;
 	
 	if (not ros::service::call("/gazebo/get_link_state", srv) or not srv.response.success)
-		{ ROS_ERROR_STREAM("Service call failed in gazebo::get_link_state(\"" << name << "\")."); throw; }
+		throw std::runtime_error("Failed service call with for link '" + name + "' in get_link_state().");
 
 	return srv.response.link_state;
 }
@@ -88,7 +88,7 @@ void
 gazebo::spawn_model(const std::string& model, const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy)
 {
 	if (not std::regex_match(name, std::regex("^" + model + "[0-9]+$")))
-		throw std::runtime_error("spawn_model(): object <name> must follow the pattern '<model>n' where n is some number (e.g. bottle1)");
+		throw std::invalid_argument("spawn_model(): object <name> must follow the pattern '<model>n' where n is some number (e.g. bottle1)");
 	
 	// SpawnModel service can be used, but XML cannot be laoded from database
 	// https://pastebin.com/UTWJSScZ

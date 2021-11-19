@@ -20,7 +20,7 @@ moveit::make_mesh_cobj(const std::string& name, const std::string& path, const s
 	shapes::ShapeMsg shape_msg;
 
 	if (mesh_ptr = shapes::createMeshFromResource(path); mesh_ptr == nullptr)
-		throw std::runtime_error("The mesh file '" + path + "' could not be located.");
+		throw std::runtime_error("The mesh file '" + path + "' could not be located in make_mesh_cobj().");
 
 	shapes::constructMsgFromShape(mesh_ptr, shape_msg);
 	mesh = boost::get<shape_msgs::Mesh>(shape_msg);
@@ -116,7 +116,7 @@ moveit::set_floating_jnt_pose(moveit::core::RobotState& state, const std::string
 
 	const auto jnt_type = state.getRobotModel()->getRootJoint()->getTypeName();
 	if (jnt_type != "Floating")
-		throw std::runtime_error("Joint type of '" + joint + "' must be 'Floating'.");
+		throw std::invalid_argument("Joint type of '" + joint + "' must be 'Floating' in set_floating_jnt_pose().");
 
 	// how to know where "/trans_x" comes from
 	// std::cout << state.getStateTreeString() << std::endl;
