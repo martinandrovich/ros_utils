@@ -70,11 +70,12 @@ include_directories(
 
 ## ros_utils
 add_library(ros_utils
-	src/lib_ros.cpp
+	src/lib_eigen.cpp
 	src/lib_gazebo.cpp
 	src/lib_geometry_msgs.cpp
 	src/lib_moveit.cpp
-	src/lib_eigen.cpp
+	src/lib_ros.cpp
+	src/lib_std.cpp
 )
 target_link_libraries(ros_utils ${catkin_LIBRARIES})
 
