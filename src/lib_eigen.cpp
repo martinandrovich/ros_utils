@@ -3,10 +3,11 @@
 #include <ros_utils/geometry_msgs.h>
 
 Eigen::Isometry3d
-make_tf(const std::array<double, 3>& pos, const Eigen::Vector3d& axis, double theta)
+Eigen::make_tf(const std::array<double, 3>& pos, const Eigen::Vector3d& axis, double theta)
 {
 	Eigen::Isometry3d T = Eigen::Translation3d(pos[0], pos[1], pos[2]) *
 	                      Eigen::AngleAxisd(theta, axis);
+	return T;
 }
 
 Eigen::Isometry3d
