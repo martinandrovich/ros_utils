@@ -55,6 +55,25 @@ int main(int argc, char** argv)
 	
 	// transform
 	std::cout << "gazebo::get_tf(\"world\", model):\n" << gazebo::get_tf("world", model).matrix() << std::endl;
+	
+	// ------------------------------------------------------------------------------
+	
+	// sensors
+
+	// spawn sensors
+	// ...
+	
+	// projector
+	// ...
+	
+	// camera
+	// ...
+	
+	// camera_stereo
+	// ...
+	
+	// kinect
+	// ...
 
 	return 0;
 }
