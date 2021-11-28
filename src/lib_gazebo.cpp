@@ -18,7 +18,11 @@ void
 gazebo::set_simulation(bool state)
 {
 	std_srvs::Empty srv;
-	auto srv_name = (state) ? "/gazebo/unpause_physics" : "/gazebo/pause_physics";
+	std::string srv_name = (state) ? "/gazebo/unpause_physics" : "/gazebo/pause_physics";
+
+	if (not ros::service::waitForService(srv_name, ros::Duration(5.0)))
+		throw std::runtime_error("Timed out after 5 sec while waiting in set_simulation().");
+
 	if (not ros::service::call(srv_name, srv))
 		throw std::runtime_error("Failed service call to set simulation in set_simulation().");
 }
@@ -40,8 +44,6 @@ gazebo::get_link_states()
 gazebo_msgs::ModelState
 gazebo::get_model_state(const std::string& name, const std::string& ref)
 {
-	static auto init = ros::init("get_model_state");
-
 	gazebo_msgs::GetModelState srv;
 	srv.request.model_name = name;
 	srv.request.relative_entity_name = ref;
@@ -61,8 +63,6 @@ gazebo::get_model_state(const std::string& name, const std::string& ref)
 gazebo_msgs::LinkState
 gazebo::get_link_state(const std::string& name, const std::string& ref)
 {
-	static auto init = ros::init("/gazebo/get_link_state");
-
 	gazebo_msgs::GetLinkState srv;
 	srv.request.link_name = name;
 	srv.request.reference_frame = ref;
@@ -125,8 +125,6 @@ gazebo::spawn_model(const std::string& model, const std::string& name, const geo
 void
 gazebo::delete_model(const std::string& name)
 {
-	static auto init = ros::init("delete_model");
-
 	gazebo_msgs::DeleteModel srv;
 	srv.request.model_name = name;
 

@@ -10,8 +10,8 @@
 namespace ros
 {
 
-	bool
-	init(const std::string& name);
+	// bool
+	// init(const std::string& name);
 
 	std::shared_ptr<ros::NodeHandle>
 	make_node(const std::string& name);
@@ -24,7 +24,7 @@ namespace ros::param
 	inline auto
 	read = [](const std::string& name, T fallback)
 	{
-		static auto init = ros::init("ros_utils_read");
+		// static auto init = ros::init("ros_utils_read");
 
 		if (T param; ros::param::get(name, param))
 			return param;
