@@ -20,7 +20,7 @@ namespace gazebo
 {
 	// -- simulation --------------------------------------------------------------
 
-	void // todo
+	void
 	set_simulation(bool state);
 
 	// -- models and states -------------------------------------------------------

@@ -6,6 +6,7 @@
 #include <ros_utils/geometry_msgs.h>
 
 #include <ros/ros.h>
+#include <std_srvs/Empty.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/GetLinkState.h>
@@ -13,7 +14,14 @@
 
 // -- simulation --------------------------------------------------------------
 
-// ...
+void
+gazebo::set_simulation(bool state)
+{
+	std_srvs::Empty srv;
+	auto srv_name = (state) ? "/gazebo/unpause_physics" : "/gazebo/pause_physics";
+	if (not ros::service::call(srv_name, srv))
+		throw std::runtime_error("Failed service call to set simulation in set_simulation().");
+}
 
 // -- models and states -------------------------------------------------------
 
@@ -37,10 +45,10 @@ gazebo::get_model_state(const std::string& name, const std::string& ref)
 	gazebo_msgs::GetModelState srv;
 	srv.request.model_name = name;
 	srv.request.relative_entity_name = ref;
-	
+
 	if (not ros::service::call("/gazebo/get_model_state", srv) or not srv.response.success)
 		throw std::runtime_error("Failed service call with for model '" + name + "' in get_model_state().");
-	
+
 	gazebo_msgs::ModelState model_state;
 	model_state.model_name = name;
 	model_state.reference_frame = ref;
@@ -58,7 +66,7 @@ gazebo::get_link_state(const std::string& name, const std::string& ref)
 	gazebo_msgs::GetLinkState srv;
 	srv.request.link_name = name;
 	srv.request.reference_frame = ref;
-	
+
 	if (not ros::service::call("/gazebo/get_link_state", srv) or not srv.response.success)
 		throw std::runtime_error("Failed service call with for link '" + name + "' in get_link_state().");
 
@@ -88,8 +96,8 @@ void
 gazebo::spawn_model(const std::string& model, const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy)
 {
 	if (not std::regex_match(name, std::regex("^" + model + "[0-9]+$")))
-		throw std::invalid_argument("spawn_model(): object <name> must follow the pattern '<model>n' where n is some number (e.g. bottle1)");
-	
+		throw std::invalid_argument("spawn_model(): object <name> must follow the pattern '<model>n' where n is an integer (e.g. bottle1)");
+
 	// SpawnModel service can be used, but XML cannot be laoded from database
 	// https://pastebin.com/UTWJSScZ
 
@@ -103,14 +111,14 @@ gazebo::spawn_model(const std::string& model, const std::string& name, const std
 		" -R " + std::to_string(rpy[0]) +
 		" -P " + std::to_string(rpy[1]) +
 		" -Y " + std::to_string(rpy[2]);
-	
+
 	// execute command
 	system(cmd.c_str());
 }
 
 void
 gazebo::spawn_model(const std::string& model, const std::string& name, const geometry_msgs::Pose& pose)
-{	
+{
 	spawn_model(model, name, geometry_msgs::read_pose(pose).pos, geometry_msgs::read_pose(pose).rpy);
 }
 
@@ -121,7 +129,7 @@ gazebo::delete_model(const std::string& name)
 
 	gazebo_msgs::DeleteModel srv;
 	srv.request.model_name = name;
-	
+
 	if (not ros::service::call("/gazebo/delete_model", srv) or not srv.response.success)
 		ROS_ERROR_STREAM("Service call failed in gazebo::delete_model(\"" << name << "\").");
 }
