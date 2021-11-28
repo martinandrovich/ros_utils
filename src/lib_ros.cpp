@@ -14,10 +14,10 @@ ros::init(const std::string& name)
 	return true;
 }
 
-ros::NodeHandle*
+std::shared_ptr<ros::NodeHandle>
 ros::make_node(const std::string& name)
 {
 	// init ros with empty argc and argv and make a new node
-	static auto init = ros::init(name);
-	return new ros::NodeHandle(name);
+	static auto init = ros::init(name); // once per calling thread
+	return std::make_shared<ros::NodeHandle>(name);
 }
