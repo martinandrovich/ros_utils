@@ -11,6 +11,7 @@
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Pose.h>
 #include <gazebo_msgs/ModelState.h>
@@ -55,10 +56,14 @@ namespace gazebo
 	void
 	delete_model(const std::string& name);
 
-	void // todo
-	move_model(const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy = { INFINITY, INFINITY, INFINITY});
+	void
+	move_model(const std::string& name, const geometry_msgs::Pose& pose);
+
+	void
+	move_model(const std::string& name, const std::array<double, 3>& pos, std::array<double, 3> rpy = {INFINITY, INFINITY, INFINITY});
 
 	// -- sensors -----------------------------------------------------------------
+	// should probaby have their own file with Sensor base class - maybe even own pkg for xacro'ed models etc. (gazebo_sensors)
 
 	struct projector // todo
 	{
@@ -81,8 +86,8 @@ namespace gazebo
 	};
 
 	// ----------------------------------------------------------------------------
-	
-	struct camera // todo
+
+	struct camera
 	{
 		// gazebo::camera().get_img();
 		// gazebo::camera("namespace/camera_name").get_img<cv::Mat>();
@@ -92,21 +97,29 @@ namespace gazebo
 		camera(const std::string& name);
 		camera(const std::string& name, const std::string& topic_img_raw, const std::string& topic_camera_info);
 
-		template<typename ImageT = sensor_msgs::Image>
-		ImageT
+		sensor_msgs::Image
 		get_img();
 
 		sensor_msgs::CameraInfo
 		get_info();
+
+		void
+		set_pose(const geometry_msgs::Pose& pose);
+		
+		void // keep the current orientation
+		set_pose(const std::array<double, 3>& pos, std::array<double, 3> rpy = {INFINITY, INFINITY, INFINITY});
+		
+		// geometry_msgs::Pose // todo
+		// get_pose();
 
 	private:
 		std::string name = "camera";
 		std::string topic_img_raw = name + "/image_raw";
 		std::string topic_camera_info = name + "/camera_info";
 	};
-	
+
 	// ----------------------------------------------------------------------------
-	
+
 	struct camera_stereo // todo
 	{
 		// auto imgs = gazebo::camera_stereo().get_imgs();
@@ -117,7 +130,7 @@ namespace gazebo
 		camera_stereo() = default;
 		camera_stereo(const std::string& name);
 		camera_stereo(const std::string& name, const std::string& topic_img_raw, const std::string& topic_camera_info);
-		
+
 		template<typename T>
 		struct StereoContainer
 		{
@@ -140,22 +153,23 @@ namespace gazebo
 		std::string topic_img_raw = name + "/image_raw";
 		std::string topic_camera_info = name + "/camera_info";
 	};
-	
+
 	// ----------------------------------------------------------------------------
-	
+
 	struct kinect // todo
 	{
 		kinect() = default;
 		kinect(const std::string& name);
 
-		sensor_msgs::PointCloud2
+		template<typename CloudT = sensor_msgs::PointCloud2> // sensor_msgs::PointCloud or sensor_msgs::PointCloud2
+		CloudT
 		get_cloud();
-		
-		void
-		get_img();
 
-		sensor_msgs::CameraInfo
-		get_info();
+		// void
+		// get_img();
+
+		// sensor_msgs::CameraInfo
+		// get_info();
 
 	private:
 		std::string name                    = "kinect";

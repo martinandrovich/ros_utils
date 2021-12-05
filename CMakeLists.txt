@@ -5,19 +5,38 @@ project(ros_utils)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+################################################################################################
+
+# dependencies
+
 # find catkin and any catkin packages
 find_package(
 	catkin REQUIRED
 	COMPONENTS
 		roscpp
 		roslib
+		cv_bridge
 		eigen_conversions
+		sensor_msgs
 		geometric_shapes
 		gazebo_msgs
 		geometry_msgs
 		moveit_msgs
 		moveit_core
 )
+
+# OpenCV
+find_package(OpenCV 4 REQUIRED)
+
+# PCL
+find_package(
+	PCL 1.7 REQUIRED
+	COMPONENTS
+		common
+		io
+)
+
+add_definitions(${PCL_DEFINITIONS})
 
 # Finding Eigen is somewhat complicated because of our need to support Ubuntu
 # all the way back to saucy.  First we look for the Eigen3 cmake module
@@ -36,7 +55,10 @@ if(NOT EIGEN3_INCLUDE_DIRS)
 	set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 endif()
 
+################################################################################################
+
 # declare a catkin package
+
 catkin_package(
 	INCLUDE_DIRS
 		include
@@ -46,20 +68,29 @@ catkin_package(
 	CATKIN_DEPENDS
 		roscpp
 		roslib
+		cv_bridge
 		eigen_conversions
+		sensor_msgs
 		geometric_shapes
 		gazebo_msgs
 		geometry_msgs
 		moveit_msgs
 		moveit_core
 	DEPENDS
+		OpenCV
+		PCL
 		EIGEN3
 )
 
+################################################################################################
+
 # include directories
+
 include_directories(
 	include
 	${catkin_INCLUDE_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+	${PCL_INCLUDE_DIRS}
 	${EIGEN3_INCLUDE_DIRS}
 )
 
@@ -72,12 +103,13 @@ include_directories(
 add_library(ros_utils
 	src/lib_eigen.cpp
 	src/lib_gazebo.cpp
+	src/lib_gazebo_sensors.cpp
 	src/lib_geometry_msgs.cpp
 	src/lib_moveit.cpp
 	src/lib_ros.cpp
 	src/lib_std.cpp
 )
-target_link_libraries(ros_utils ${catkin_LIBRARIES})
+target_link_libraries(ros_utils ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES})
 
 ################################################################################################
 
@@ -92,6 +124,9 @@ target_link_libraries(demo_ros_topic ${catkin_LIBRARIES} ros_utils)
 add_executable(demo_gazebo examples/demo_gazebo)
 target_link_libraries(demo_gazebo ${catkin_LIBRARIES} ros_utils)
 
+add_executable(demo_gazebo_sensors examples/demo_gazebo_sensors)
+target_link_libraries(demo_gazebo_sensors ${catkin_LIBRARIES} ros_utils)
+
 add_executable(demo_std examples/demo_std)
 target_link_libraries(demo_std ${catkin_LIBRARIES} ros_utils)
 
@@ -100,6 +135,9 @@ target_link_libraries(demo_geometry_msgs ${catkin_LIBRARIES} ros_utils)
 
 add_executable(demo_moveit examples/demo_moveit)
 target_link_libraries(demo_moveit ${catkin_LIBRARIES} ros_utils)
+
+add_executable(demo_pcl examples/demo_pcl)
+target_link_libraries(demo_pcl ${catkin_LIBRARIES} ros_utils)
 
 ################################################################################################
 

@@ -4,6 +4,7 @@
 
 #include <ros_utils/ros.h>
 #include <ros_utils/geometry_msgs.h>
+#include <ros_utils/std.h>
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -11,6 +12,7 @@
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/GetLinkState.h>
 #include <gazebo_msgs/DeleteModel.h>
+#include <gazebo_msgs/SetModelState.h>
 
 // -- simulation --------------------------------------------------------------
 
@@ -21,10 +23,10 @@ gazebo::set_simulation(bool state)
 	std::string srv_name = (state) ? "/gazebo/unpause_physics" : "/gazebo/pause_physics";
 
 	if (not ros::service::waitForService(srv_name, ros::Duration(5.0)))
-		throw std::runtime_error("Timed out after 5 sec while waiting in set_simulation().");
+		throw std::runtime_error("Timed out after 5 sec while waiting in gazebo::set_simulation().");
 
 	if (not ros::service::call(srv_name, srv))
-		throw std::runtime_error("Failed service call to set simulation in set_simulation().");
+		throw std::runtime_error("Failed service call to set simulation in gazebo::set_simulation().");
 }
 
 // -- models and states -------------------------------------------------------
@@ -49,7 +51,7 @@ gazebo::get_model_state(const std::string& name, const std::string& ref)
 	srv.request.relative_entity_name = ref;
 
 	if (not ros::service::call("/gazebo/get_model_state", srv) or not srv.response.success)
-		throw std::runtime_error("Failed service call with for model '" + name + "' in get_model_state().");
+		throw std::runtime_error("Failed service call with for model '" + name + "' in gazebo::get_model_state().");
 
 	gazebo_msgs::ModelState model_state;
 	model_state.model_name = name;
@@ -68,7 +70,7 @@ gazebo::get_link_state(const std::string& name, const std::string& ref)
 	srv.request.reference_frame = ref;
 
 	if (not ros::service::call("/gazebo/get_link_state", srv) or not srv.response.success)
-		throw std::runtime_error("Failed service call with for link '" + name + "' in get_link_state().");
+		throw std::runtime_error("Failed service call with for link '" + name + "' in gazebo::get_link_state().");
 
 	return srv.response.link_state;
 }
@@ -95,7 +97,7 @@ gazebo::get_tf(const std::string& from, const std::string& to)
 void
 gazebo::spawn_model(const std::string& model, const std::string& name, const std::array<double, 3>& pos, const std::array<double, 3>& rpy)
 {
-	if (not std::regex_match(name, std::regex("^" + model + "[0-9]+$")))
+	if (not is_in(name, {"camera", "projector", "camera_stereo", "kinect"}) and not std::regex_match(name, std::regex("^" + model + "[0-9]+$")))
 		throw std::invalid_argument("spawn_model(): object <name> must follow the pattern '<model>n' where n is an integer (e.g. bottle1)");
 
 	// SpawnModel service can be used, but XML cannot be laoded from database
@@ -129,5 +131,26 @@ gazebo::delete_model(const std::string& name)
 	srv.request.model_name = name;
 
 	if (not ros::service::call("/gazebo/delete_model", srv) or not srv.response.success)
-		ROS_ERROR_STREAM("Service call failed in gazebo::delete_model(\"" << name << "\").");
+		ROS_ERROR_STREAM("Could not delete model '" << name << "' in gazebo::delete_model().");
+}
+
+void
+gazebo::move_model(const std::string& name, const geometry_msgs::Pose& pose)
+{
+	gazebo_msgs::SetModelState srv;
+	srv.request.model_state.model_name = name;
+	srv.request.model_state.reference_frame = "world";
+	srv.request.model_state.pose = pose;
+
+	if (not ros::service::call("/gazebo/set_model_state", srv) or not srv.response.success)
+		throw std::runtime_error("Failed service call with for model '" + name + "' in gazebo::move_model().");
+}
+void
+gazebo::move_model(const std::string& name, const std::array<double, 3>& pos, std::array<double, 3> rpy)
+{
+	// keep current orientation
+	if (std::any_of(rpy.begin(), rpy.end(), [](auto& x){ return x == INFINITY; }))
+		rpy = geometry_msgs::read_pose(gazebo::get_pose(name)).rpy;
+	
+	gazebo::move_model(name, geometry_msgs::make_pose(pos, rpy));
 }
