@@ -3,8 +3,11 @@
 #include <string>
 #include <iostream>
 #include <memory>
-#include <ros/ros.h>
+#include <regex>
+#include <filesystem>
 
+#include <ros/ros.h>
+#include <ros/package.h>
 #include <std_msgs/Float64.h>
 
 namespace ros
@@ -36,6 +39,28 @@ namespace ros::param
 
 }
 
+namespace ros::package
+{
+	inline std::string
+	find(std::string path)
+	{
+		// https://regex101.com/r/435Fpr/1
+		std::smatch m;
+		if (not std::regex_search(path, m, std::regex("package:\\/\\/(\\w*)\\/?(\\S*)?")))
+			return "";
+
+		auto path_pkg = ros::package::getPath(m[1]);
+		if (path_pkg.empty())
+			{ ROS_WARN_STREAM("Package '" << m[1].str() << "' was not found in ros::package::find()."); return ""; }
+
+		path = path_pkg + "/" + m[2].str();
+		if (not m[2].str().empty() and not std::filesystem::exists(path))
+			ROS_WARN_STREAM("File '" << path << "' was not found in ros::package::find().");
+
+		return path;
+	}
+}
+
 namespace ros::topic
 {
 	void
@@ -47,6 +72,20 @@ namespace ros::topic
 		// create async listener
 
 	// };
+
+	template <typename T>
+	inline void
+	flush(const std::string& topic, ros::Duration dur = ros::Duration(0.5))
+	{
+		ROS_INFO_STREAM("Flushing: '" << topic << "' for " << dur.toSec() << " second(s)...");
+
+		static ros::NodeHandle nh;
+		auto sub = nh.subscribe<T>(topic, 1, [&](auto& msg){ /* do nothing */ });
+
+		auto t = ros::Time::now() + dur;
+		while (ros::Time::now() < t)
+			ros::spinOnce();
+	}
 
 	template <typename T>
 	inline void
