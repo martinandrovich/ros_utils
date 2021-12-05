@@ -13,14 +13,24 @@
 
 	<url type="repository">https://github.com/martinandrovich/ros_utils</url>
 
+	<!-- build tool -->
 	<buildtool_depend>catkin</buildtool_depend>
+
+	<!-- ROS packages -->
 	<depend>roscpp</depend>
 	<depend>roslib</depend>
+	<depend>cv_bridge</depend>
 	<depend>eigen_conversions</depend>
+	<depend>sensor_msgs</depend>
 	<depend>geometric_shapes</depend>
 	<depend>gazebo_msgs</depend>
 	<depend>geometry_msgs</depend>
 	<depend>moveit_msgs</depend>
 	<depend>moveit_core</depend>
+
+	<!-- libraries -->
+	<depend>OpenCV</depend>
+	<depend>PCL</depend>
+	<depend>Eigen3</depend>
 
 </package>
