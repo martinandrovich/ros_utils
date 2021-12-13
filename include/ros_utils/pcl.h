@@ -6,11 +6,12 @@
 
 #include <pcl/io/pcd_io.h>
 #include <ros_utils/ros.h>
+#include <boost/shared_ptr.hpp>
 
 namespace pcl
 {
 	template<typename PointT>
-	std::shared_ptr<pcl::PointCloud<PointT>>
+	boost::shared_ptr<pcl::PointCloud<PointT>>
 	load_cloud(std::string path)
 	{
 		// assert extension
@@ -22,7 +23,7 @@ namespace pcl
 			path = ros::package::find(path);
 
 		// load point cloud
-		auto cloud = std::make_shared<pcl::PointCloud<PointT>>();
+		auto cloud = boost::make_shared<pcl::PointCloud<PointT>>();
 		pcl::io::loadPCDFile<PointT>(path, *cloud);
 		return cloud;
 	}
