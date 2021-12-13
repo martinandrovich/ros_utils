@@ -33,14 +33,14 @@ int main(int argc, char** argv)
 
 	{ // get cloud and cout info
 		auto cloud = gazebo::kinect().get_cloud<sensor_msgs::PointCloud2>();
-		std::cout << "cloud.data.size(): " << cloud.data.size() << std::endl;
-		std::cout << "cloud.width: " << cloud.width << std::endl;
-		std::cout << "cloud.height: " << cloud.height << std::endl << std::endl;
+		std::cout << "cloud->data.size(): " << cloud->data.size() << std::endl;
+		std::cout << "cloud->width: " << cloud->width << std::endl;
+		std::cout << "cloud->height: " << cloud->height << std::endl << std::endl;
 
 		auto cloud2 = gazebo::kinect().get_cloud<sensor_msgs::PointCloud2>();
-		std::cout << "cloud2.data.size(): " << cloud2.data.size() << std::endl;
-		std::cout << "cloud2.width: " << cloud2.width << std::endl;
-		std::cout << "cloud2.height: " << cloud2.height << std::endl;
+		std::cout << "cloud2->data.size(): " << cloud2->data.size() << std::endl;
+		std::cout << "cloud2->width: " << cloud2->width << std::endl;
+		std::cout << "cloud2->height: " << cloud2->height << std::endl;
 	}
 
 	// ------------------------------------------------------------------------------

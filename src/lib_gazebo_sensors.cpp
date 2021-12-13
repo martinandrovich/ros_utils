@@ -7,6 +7,9 @@
 #include <ros/ros.h>
 #include <ros_utils/ros.h>
 
+#include <pcl/io/io.h>
+#include <pcl_conversions/pcl_conversions.h>
+
 sensor_msgs::Image
 gazebo::camera::get_img()
 {
@@ -33,25 +36,29 @@ gazebo::camera::set_pose(const std::array<double, 3>& pos, std::array<double, 3>
 }
 
 template<typename CloudT>
-CloudT
+boost::shared_ptr<CloudT>
 gazebo::kinect::get_cloud()
 {
-	static_assert(std::is_same<CloudT, sensor_msgs::PointCloud>::value || std::is_same<CloudT, sensor_msgs::PointCloud2>::value,
-	              "Wrong type. Use sensor_msgs::PointCloud or sensor_msgs::PointCloud2.");
+	static_assert(std::is_same<CloudT, sensor_msgs::PointCloud2>::value || std::is_same<CloudT, pcl::PointCloud<pcl::PointXYZ>>::value,
+	              "Wrong type. Use sensor_msgs::PointCloud2 or pcl::PointCloud<pcl::PointXYZ>.");
 
-	if constexpr (std::is_same<CloudT, sensor_msgs::PointCloud>::value)
-	{
-		ros::topic::flush<sensor_msgs::PointCloud>(this->topic_depth_cloud);
-		return *(ros::topic::waitForMessage<sensor_msgs::PointCloud>(this->topic_depth_cloud));
-	}
-	else
+	// get cloud
+	ros::topic::flush<sensor_msgs::PointCloud2>(this->topic_depth_cloud);
+	auto cloud = ros::topic::waitForMessage<sensor_msgs::PointCloud2>(this->topic_depth_cloud);
+
 	if constexpr (std::is_same<CloudT, sensor_msgs::PointCloud2>::value)
 	{
-		ros::topic::flush<sensor_msgs::PointCloud2>(this->topic_depth_cloud);
-		return *(ros::topic::waitForMessage<sensor_msgs::PointCloud2>(this->topic_depth_cloud));
+		return boost::make_shared<CloudT>(*cloud); // return non-const data
+	}
+	else
+	if constexpr (std::is_same<CloudT, pcl::PointCloud<pcl::PointXYZ>>::value)
+	{
+		auto cloud_pcl = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+		pcl::fromROSMsg(*cloud, *cloud_pcl);
+		return cloud_pcl;
 	}
 }
 
 // TEMPLATE SPECIALIZATIONS
-template sensor_msgs::PointCloud gazebo::kinect::get_cloud<sensor_msgs::PointCloud>();
-template sensor_msgs::PointCloud2 gazebo::kinect::get_cloud<sensor_msgs::PointCloud2>();
+template boost::shared_ptr<sensor_msgs::PointCloud2> gazebo::kinect::get_cloud<sensor_msgs::PointCloud2>();
+template boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> gazebo::kinect::get_cloud<pcl::PointCloud<pcl::PointXYZ>>();

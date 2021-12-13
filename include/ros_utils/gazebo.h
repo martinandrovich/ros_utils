@@ -163,8 +163,8 @@ namespace gazebo
 		kinect() = default;
 		// kinect(const std::string& name);
 
-		template<typename CloudT = sensor_msgs::PointCloud2> // sensor_msgs::PointCloud or sensor_msgs::PointCloud2
-		CloudT
+		template<typename CloudT = sensor_msgs::PointCloud2> // sensor_msgs::PointCloud2 or pcl::PointCloud<pcl::PointXYZ>
+		boost::shared_ptr<CloudT>
 		get_cloud();
 
 		// void
