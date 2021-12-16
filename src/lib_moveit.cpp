@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <ros_utils/gazebo.h>
 #include <ros_utils/std.h>
+#include <ros_utils/geometry_msgs.h>
 
 #include <geometry_msgs/Pose.h>
 #include <moveit_msgs/CollisionObject.h>
@@ -32,8 +33,12 @@ moveit::make_mesh_cobj(const std::string& name, const std::string& path, const s
 	co.mesh_poses.resize(1);
 	co.meshes[0] = mesh;
 	co.header.frame_id = planning_frame;
+	co.pose = geometry_msgs::make_pose({0, 0, 0}); // to fix "Empty quaternion found in pose message. Setting to neutral orientation.""
 	co.mesh_poses[0].position = pose.position;
 	co.mesh_poses[0].orientation = pose.orientation;
+
+	co.meshes.push_back(mesh);
+	co.mesh_poses.push_back(co.mesh_poses[0]);
 	co.operation = co.ADD;
 
 	return co;
@@ -75,13 +80,13 @@ moveit::get_gazebo_cobjs(const std::string& planning_frame, const std::vector<st
 moveit_msgs::PlanningScene
 moveit::add_cobjs(planning_scene::PlanningScenePtr& planning_scene, const std::vector<moveit_msgs::CollisionObject>& cobjs, bool remove_attached_cobjs)
 {
-	static moveit_msgs::PlanningScene planning_scene_msg;
+	moveit_msgs::PlanningScene planning_scene_msg;
 	planning_scene->getPlanningSceneMsg(planning_scene_msg);
 
 	planning_scene_msg.world.collision_objects = cobjs;
 
-	planning_scene_msg.world.collision_objects[0].id;
-	planning_scene_msg.robot_state.attached_collision_objects[0].object.id;
+	// planning_scene_msg.world.collision_objects[0].id;
+	// planning_scene_msg.robot_state.attached_collision_objects[0].object.id;
 
 	if (remove_attached_cobjs)
 	{
@@ -92,7 +97,7 @@ moveit::add_cobjs(planning_scene::PlanningScenePtr& planning_scene, const std::v
 		// keep attached objects
 		auto& a = planning_scene_msg.world.collision_objects;
 		auto& b = planning_scene_msg.robot_state.attached_collision_objects;
-		
+
 		// remove any elements from a that are also in b
 		// matching by their id
 		a.erase(std::remove_if(a.begin(), a.end(),
