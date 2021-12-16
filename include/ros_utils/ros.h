@@ -89,10 +89,10 @@ namespace ros::topic
 
 	template <typename T>
 	inline void
-	publish(const std::string& topic, const T& msg, bool latch = false, const std::string& node_name = "~")
+	publish(const std::string& topic, const T& msg, bool latch = false)
 	{
-		static auto nh = ros::make_node(node_name);
-		static auto pub = nh->advertise<T>(topic, 1, latch);
+		static ros::NodeHandle nh;
+		static auto pub = nh.advertise<T>(topic, 1, latch);
 		pub.publish(msg);
 	};
 
