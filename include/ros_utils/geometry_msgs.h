@@ -40,4 +40,10 @@ namespace geometry_msgs
 
 		return pose_struct;
 	}
+	
+	inline double
+	diff_xy(const geometry_msgs::Pose& a, const geometry_msgs::Pose& b)
+	{
+		return std::sqrt(std::pow(a.position.x - b.position.x, 2) + std::pow(a.position.y - b.position.y, 2));
+	}
 }
