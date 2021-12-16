@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	std::array<std::string, 2> arr = { "Hello", "array" }; // todo
 	
 	std::cout << vec << std::endl;
-	// std::cout << arr << std::endl;
+	std::cout << arr << std::endl;
 
 	return 0;
 }

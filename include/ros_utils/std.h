@@ -29,6 +29,18 @@ operator << (std::ostream& os, const std::vector<T>& vec)
 	return os;
 }
 
+// https://stackoverflow.com/a/19152438/1658105
+template <class T, std::size_t N>
+std::ostream&
+operator << (std::ostream& os, const std::array<T, N>& arr)
+{
+	os << "[";
+	for (auto i = 0; i < N; i++)
+		os << arr[i] << (i < (N - 1) ? ", " : "");
+	os << "]";
+	return os;
+}
+
 // https://stackoverflow.com/a/51532253/1658105
 // template<typename T, template<typename, typename> class Container>
 // std::ostream&
