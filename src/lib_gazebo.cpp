@@ -13,6 +13,7 @@
 #include <gazebo_msgs/GetLinkState.h>
 #include <gazebo_msgs/DeleteModel.h>
 #include <gazebo_msgs/SetModelState.h>
+#include <gazebo_msgs/SetModelConfiguration.h>
 
 // -- simulation --------------------------------------------------------------
 
@@ -41,6 +42,23 @@ gazebo_msgs::LinkStates
 gazebo::get_link_states()
 {
 	return *(ros::topic::waitForMessage<gazebo_msgs::LinkStates>("/gazebo/link_states"));
+}
+
+bool
+gazebo::set_model_configuration(const std::string& name, const std::vector<std::string>& joint_names, const std::vector<double>& joint_positions)
+{
+	gazebo_msgs::SetModelConfiguration srv;
+	
+	srv.request.model_name = name;
+	srv.request.joint_names = joint_names;
+	srv.request.joint_positions = joint_positions;
+	
+	auto success = ros::service::call("/gazebo/set_model_configuration", srv);
+	
+	if (not success)
+		ROS_ERROR_STREAM("Failed to set model configuration for '" << name << "' in set_model_configuration()");
+	
+	return (success and srv.response.success);
 }
 
 gazebo_msgs::ModelState

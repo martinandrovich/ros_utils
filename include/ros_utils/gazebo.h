@@ -61,6 +61,9 @@ namespace gazebo
 
 	void
 	move_model(const std::string& name, const std::array<double, 3>& pos, std::array<double, 3> rpy = {INFINITY, INFINITY, INFINITY});
+	
+	bool
+	set_model_configuration(const std::string& name, const std::vector<std::string>& joint_names, const std::vector<double>& joint_positions);
 
 	// -- sensors -----------------------------------------------------------------
 
