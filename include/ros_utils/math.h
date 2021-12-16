@@ -5,7 +5,7 @@ namespace math
 {
 
 	template<typename T>
-	T
+	inline T
 	normalize_angle(T angle)
 	{
 		static_assert(std::is_floating_point<T>::value, "normalize_angle(T) only works for floating point types.");

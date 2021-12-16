@@ -11,7 +11,7 @@
 namespace pcl
 {
 	template<typename PointT>
-	boost::shared_ptr<pcl::PointCloud<PointT>>
+	inline boost::shared_ptr<pcl::PointCloud<PointT>>
 	load_cloud(std::string path)
 	{
 		// assert extension
