@@ -29,18 +29,7 @@ namespace Eigen
 	// -- inverse ----------------------------------------------------------------
 
 	Eigen::MatrixXd
-	pseudo_inverse(const Eigen::MatrixXd& M, double lambda = 0.0)
-	{
-		Eigen::JacobiSVD<Eigen::MatrixXd> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
-		Eigen::JacobiSVD<Eigen::MatrixXd>::SingularValuesType sing_vals = svd.singularValues();
-		Eigen::MatrixXd S = M;  // copying the dimensions of M, its content is not needed.
-		S.setZero();
-
-		for (size_t i = 0; i < sing_vals.size(); ++i)
-			S(i, i) = (sing_vals(i)) / (sing_vals(i) * sing_vals(i) + lambda * lambda);
-
-		return Eigen::MatrixXd(svd.matrixV() * S.transpose() * svd.matrixU().transpose());;
-	}
+	pseudo_inverse(const Eigen::MatrixXd& M, double lambda = 0.0);
 
 	// -- export -----------------------------------------------------------------
 
