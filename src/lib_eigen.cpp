@@ -28,11 +28,11 @@ Eigen::make_tf(const geometry_msgs::Pose& pose)
 }
 
 Eigen::MatrixXd
-Eigen::pseudo_inverse(const Eigen::MatrixXd& M, double lambda)
+Eigen::pseudo_inverse(const Eigen::MatrixXd& mat, double lambda)
 {
-	Eigen::JacobiSVD<Eigen::MatrixXd> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
+	Eigen::JacobiSVD<Eigen::MatrixXd> svd(mat, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	Eigen::JacobiSVD<Eigen::MatrixXd>::SingularValuesType sing_vals = svd.singularValues();
-	Eigen::MatrixXd S = M;  // copying the dimensions of M, its content is not needed.
+	Eigen::MatrixXd S = mat;  // copying the dimensions of mat, its content is not needed.
 	S.setZero();
 
 	for (size_t i = 0; i < sing_vals.size(); ++i)

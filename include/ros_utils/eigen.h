@@ -26,10 +26,19 @@ namespace Eigen
 	Eigen::Isometry3d
 	make_tf(const geometry_msgs::Pose& pose);
 
-	// -- inverse ----------------------------------------------------------------
+	// -- operators---------------------------------------------------------------
 
 	Eigen::MatrixXd
-	pseudo_inverse(const Eigen::MatrixXd& M, double lambda = 0.0);
+	pseudo_inverse(const Eigen::MatrixXd& mat, double lambda = 0.0);
+
+	template<class Derived>
+	inline Eigen::Matrix<typename Derived::Scalar, 3, 3>
+	skew(const Eigen::MatrixBase<Derived>& vec)
+	{
+		// https://github.com/ethz-asl/ethzasl_msf/blob/master/msf_core/include/msf_core/eigen_utils.h
+		EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+		return (Eigen::Matrix<typename Derived::Scalar, 3, 3>() << 0.0, -vec[2], vec[1], vec[2], 0.0, -vec[0], -vec[1], vec[0], 0.0).finished();
+	}
 
 	// -- export -----------------------------------------------------------------
 
