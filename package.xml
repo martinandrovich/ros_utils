@@ -29,8 +29,11 @@
 	<depend>moveit_core</depend>
 
 	<!-- libraries -->
-	<depend>OpenCV</depend>
-	<depend>PCL</depend>
-	<depend>Eigen3</depend>
+	<depend>libopencv-contrib-dev</depend>
+	<depend>libpcl-all</depend>
+	<depend>eigen</depend>
+	<!-- <depend>OpenCV</depend> -->
+	<!-- <depend>PCL</depend> -->
+	<!-- <depend>Eigen3</depend> -->
 
 </package>
